@@ -30,7 +30,7 @@ function [x,y,masks] = afxPrepareDesign(design,space)
     % mask data
     x(:,:,~masks.analysis) = 0;
     % smoothing
-    for j = 1:5
+    for j = 1:size(x,2)
         x(:,j,:) = afxFastSmooth(x(:,j,:),design.FWHM,space.dim,space.mat);
     end
     % discard data outside mask

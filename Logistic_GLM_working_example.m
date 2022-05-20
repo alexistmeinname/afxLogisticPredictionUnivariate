@@ -46,6 +46,6 @@ tic;
 % k-fold crossvalidation (fitting des glms, prediction, abspeichern aller
 % ergebnisse)
 [stats,predictions,mRSquared] = afxKFold(x,y,masks,space,design);
-toc; % ~ 15 minuten für 70 pat, 7 prädiktoren und ~70000 voxel, für den vollen datensatz vmtl. 30-45 min
+toc; % ~ 15 minuten für 60 pat, 7 prädiktoren und ~70000 voxel, für den vollen datensatz vmtl. 30-45 min, evtl. auch länger
 
 rmpath('scripts');
