@@ -2,9 +2,11 @@ function [stats,predictions,mRSquared] = afxKFold(x,y,masks,space,design)
     
     nPatients = size(x,1);
     
-    % shuffle design
+    % shuffle design and data
     pIdx = randperm(nPatients);
     design = afxPartialDesign(design,pIdx);
+    x = x(pIdx,:,:);
+    y = y(pIdx,:);
     % patients in testset per fold
     perFold = nPatients/design.nFold;
     
