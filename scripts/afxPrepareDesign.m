@@ -17,7 +17,13 @@ function [x,y,masks] = afxPrepareDesign(design,space)
                 x(iPatient,iPredictor,:) = afxVolumeResample(val,space.XYZmm,1);
             end
         end
-        y(iPatient,:) = afxVolumeResample(design.yRaw{iPatient},space.XYZmm,0);
+        y(iPatient,:) = afxVolumeResample(design.yRaw{iPatient},space.XYZmm,0) > .5;
+        % if a patient has a old lesion, remove from x and y
+        if isfield(design,yRawOld) & ~isempty(design.yRawOld{iPatient})
+            ytmp = afxVolumeResample(design.yRawOld{iPatient},space.XYZmm,0) > .5;
+            y(iPatient,ytmp) = 0;
+            x(iPatient,:,ytmp) = NaN;
+        end
     end
     fprintf('done.\n');
 
