@@ -22,7 +22,7 @@ function [patients] = afxSavePredictions(predictions,y,masks,space,design,optThr
         afxSaveVars(fullfile(patDestDir,[prefix 'predictors']),['intercept' design.predictors],[1 design.xRaw(iPatient,:)]);
         % save info
         afxSaveVars(fullfile(patDestDir,[prefix 'info']),{'fold' 'FWHM' 'minPerfusion' 'minLesion' 'optimalThreshold'},{design.fold design.FWHM design.minPerfusion design.minLesion optThr});
-        design.patients(iPatient).predictions.optimalThr = optThr;
+        design.patients(iPatient).predictions.glm.optimalThr = optThr;
     end
     patients = design.patients;
 end
