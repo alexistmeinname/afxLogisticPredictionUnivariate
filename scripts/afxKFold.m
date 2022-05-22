@@ -34,7 +34,7 @@ function [stats,predictions,mRSquared,design] = afxKFold(x,y,masks,space,design)
         predictions.mismatch = predictions.reka0-predictions.reka1;
         % calculate threshold (min abs.vol.diff.)
         yfit = afxLogisticGLMval([stats.beta],x(idxTrain,:,:),scale);
-        optThr = afxOptimalThreshold(yfit,y,.001,false);
+        optThr = afxOptimalThreshold(yfit,y(idxTrain,:),.001,false);
         % save predictions
         patientsNew = [patietns afxSavePredictions(predictions,y(idxTest,:),masks,space,afxPartialDesign(design,idxTest),optThr)];
     end
