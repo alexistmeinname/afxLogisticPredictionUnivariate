@@ -31,8 +31,11 @@ function [stats,predictions,mRSquared] = afxKFold(x,y,masks,space,design)
         clear xReka1;
         % calculate mismatch
         predictions.mismatch = predictions.reka0-predictions.reka1;
+        % calculate threshold (min abs.vol.diff.)
+        yfit = afxLogisticGLMval([stats.beta],x(idxTrain,:,:),scale);
+        optThr = afxOptimalThreshold(yfit,y,.001,false);
         % save predictions
-        afxSavePredictions(predictions,y(idxTest,:),masks,space,afxPartialDesign(design,idxTest));
+        afxSavePredictions(predictions,y(idxTest,:),masks,space,afxPartialDesign(design,idxTest),optThr);
     end
     destDir = fullfile(design.dataDir,'output',strcat(design.analysisName,'-s',num2str(design.FWHM)),'models');
     afxSavePredictors(fullfile(destDir,strcat('meanRSquared.txt')),design.predictors,mean(mRSquared));

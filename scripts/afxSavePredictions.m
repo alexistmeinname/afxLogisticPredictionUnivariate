@@ -1,10 +1,10 @@
-function [] = afxSavePredictions(predictions,y,masks,space,design)
+function [] = afxSavePredictions(predictions,y,masks,space,design,optThr)
    
     % file prefix
     prefix = 'LogisticGLM_';
 
     % destination directory
-    destDir = fullfile(design.dataDir,'output',strcat(design.analysisName,'-s',num2str(design.FWHM)),'predictions');
+    destDir = fullfile(design.dataDir,'output','glm',strcat(design.analysisName,'-s',num2str(design.FWHM)),'predictions');
     
     predNames = fieldnames(predictions);
     for iPatient = 1:length(design.patients)
@@ -16,14 +16,12 @@ function [] = afxSavePredictions(predictions,y,masks,space,design)
             fname = sprintf('%sprediction_%s.nii',prefix,predNames{iPrediction});
             afxVolumeWrite(fullfile(patDestDir,fname),afxDeMask(masks.analysis,predictions.(predNames{iPrediction})(iPatient,:)),space.dim,'int16',space.mat);
         end
-        fname2 = sprintf('%sprediction_mask.nii',prefix);
-        afxVolumeWrite(fullfile(patDestDir,fname2),afxDeMask(masks.analysis,~isnan(predictions.(predNames{1})(iPatient,:))),space.dim,'uint8',space.mat);
         % save groundtruth
-        afxVolumeWrite(fullfile(patDestDir,'groundtruth.nii'),afxDeMask(masks.analysis,y(iPatient,:)),space.dim,'uint8',space.mat);
+        afxVolumeWrite(fullfile(patDestDir,[prefix 'groundtruth_masked.nii']),afxDeMask(masks.analysis,y(iPatient,:) & ~isnan(predictions.(predNames{1})(iPatient,:))),space.dim,'uint8',space.mat);
         % save predictors
-        afxSaveVars(fullfile(patDestDir,'predictors'),['intercept' design.predictors],[1 design.xRaw(iPatient,:)]);
+        afxSaveVars(fullfile(patDestDir,[prefix 'predictors']),['intercept' design.predictors],[1 design.xRaw(iPatient,:)]);
         % save info
-        afxSaveVars(fullfile(patDestDir,'info'),{'fold' 'FWHM' 'minPerfusion' 'minLesion'},{design.fold design.FWHM design.minPerfusion design.minLesion});
+        afxSaveVars(fullfile(patDestDir,[prefix 'info']),{'fold' 'FWHM' 'minPerfusion' 'minLesion' 'optimalThreshold'},{design.fold design.FWHM design.minPerfusion design.minLesion optThr});
     end
 end
 
