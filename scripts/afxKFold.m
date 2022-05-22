@@ -36,7 +36,7 @@ function [stats,predictions,mRSquared,design] = afxKFold(x,y,masks,space,design)
         yfit = afxLogisticGLMval([stats.beta],x(idxTrain,:,:),scale);
         optThr = afxOptimalThreshold(yfit,y(idxTrain,:),.001,false);
         % save predictions
-        patientsNew = [patietns afxSavePredictions(predictions,y(idxTest,:),masks,space,afxPartialDesign(design,idxTest),optThr)];
+        patientsNew = [patientsNew afxSavePredictions(predictions,y(idxTest,:),masks,space,afxPartialDesign(design,idxTest),optThr)];
     end
     % save mean R squared (mean of all folds)
     destDir = fullfile(design.dataDir,'output',strcat(design.analysisName,'-s',num2str(design.FWHM)),'models');
