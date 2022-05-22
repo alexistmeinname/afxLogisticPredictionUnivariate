@@ -1,4 +1,4 @@
-function afxVolumeWrite(fname,y,dim,dt,mat,descrip,slopeScaling)
+function fname = afxVolumeWrite(fname,y,dim,dt,mat,descrip,slopeScaling)
     % afxVolumeWrite(fname,y,dim,dt,mat,descrip,slopeScaling)
     %
     % dt ... uint8, int16*, int32, float32, float64, int8, uint16, uint32

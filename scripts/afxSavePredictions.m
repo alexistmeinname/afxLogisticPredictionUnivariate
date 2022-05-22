@@ -1,4 +1,4 @@
-function [] = afxSavePredictions(predictions,y,masks,space,design,optThr)
+function [patients] = afxSavePredictions(predictions,y,masks,space,design,optThr)
    
     % file prefix
     prefix = 'LogisticGLM_';
@@ -14,15 +14,17 @@ function [] = afxSavePredictions(predictions,y,masks,space,design,optThr)
         % save predictions and prediction mask
         for iPrediction = 1:length(predNames)
             fname = sprintf('%sprediction_%s.nii',prefix,predNames{iPrediction});
-            afxVolumeWrite(fullfile(patDestDir,fname),afxDeMask(masks.analysis,predictions.(predNames{iPrediction})(iPatient,:)),space.dim,'int16',space.mat);
+            design.patients(iPatient).predictions.glm.(predNames{iPrediction}) = afxVolumeWrite(fullfile(patDestDir,fname),afxDeMask(masks.analysis,predictions.(predNames{iPrediction})(iPatient,:)),space.dim,'int16',space.mat);
         end
         % save groundtruth
-        afxVolumeWrite(fullfile(patDestDir,[prefix 'groundtruth_masked.nii']),afxDeMask(masks.analysis,y(iPatient,:) & ~isnan(predictions.(predNames{1})(iPatient,:))),space.dim,'uint8',space.mat);
+        design.patients(iPatient).predictions.groundtruth = afxVolumeWrite(fullfile(patDestDir,[prefix 'groundtruth_masked.nii']),afxDeMask(masks.analysis,y(iPatient,:) & ~isnan(predictions.(predNames{1})(iPatient,:))),space.dim,'uint8',space.mat);
         % save predictors
         afxSaveVars(fullfile(patDestDir,[prefix 'predictors']),['intercept' design.predictors],[1 design.xRaw(iPatient,:)]);
         % save info
         afxSaveVars(fullfile(patDestDir,[prefix 'info']),{'fold' 'FWHM' 'minPerfusion' 'minLesion' 'optimalThreshold'},{design.fold design.FWHM design.minPerfusion design.minLesion optThr});
+        design.patients(iPatient).predictions.optimalThr = optThr;
     end
+    patients = design.patients;
 end
 
 function afxSaveVars(fname,names,vals)

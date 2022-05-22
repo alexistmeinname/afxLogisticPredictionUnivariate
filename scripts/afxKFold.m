@@ -1,4 +1,4 @@
-function [stats,predictions,mRSquared] = afxKFold(x,y,masks,space,design)
+function [stats,predictions,mRSquared,design] = afxKFold(x,y,masks,space,design)
     
     nPatients = size(x,1);
     
@@ -11,6 +11,7 @@ function [stats,predictions,mRSquared] = afxKFold(x,y,masks,space,design)
     perFold = nPatients/design.nFold;
     
     % perform folds
+    patientsNew = struct([]);
     for iFold = 1:design.nFold
         design.fold = iFold;
         % get idx for training and test-data
@@ -35,14 +36,15 @@ function [stats,predictions,mRSquared] = afxKFold(x,y,masks,space,design)
         yfit = afxLogisticGLMval([stats.beta],x(idxTrain,:,:),scale);
         optThr = afxOptimalThreshold(yfit,y,.001,false);
         % save predictions
-        afxSavePredictions(predictions,y(idxTest,:),masks,space,afxPartialDesign(design,idxTest),optThr);
+        patientsNew = [patietns afxSavePredictions(predictions,y(idxTest,:),masks,space,afxPartialDesign(design,idxTest),optThr)];
     end
+    % save mean R squared (mean of all folds)
     destDir = fullfile(design.dataDir,'output',strcat(design.analysisName,'-s',num2str(design.FWHM)),'models');
-    afxSavePredictors(fullfile(destDir,strcat('meanRSquared.txt')),design.predictors,mean(mRSquared));
+    afxSavePredictors(fullfile(destDir,'meanRSquared.txt'),design.predictors,mean(mRSquared));
+    % update design ()
+    design.patients = patientsNew;
 end
 
 function design = afxPartialDesign(design,idx)
     design.patients = design.patients(idx);
-    design.yRaw = design.yRaw(idx);
-    design.xRaw = design.xRaw(idx,:);
 end

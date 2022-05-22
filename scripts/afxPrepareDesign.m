@@ -1,7 +1,7 @@
 function [x,y,masks] = afxPrepareDesign(design,space)
 
-    nPatients = size(design.xRaw,1);
-    nPredictors = size(design.xRaw,2);
+    nPatients = length(design.patients);
+    nPredictors = length(design.predictors);
     nVoxels = prod(space.dim);
 
     % load images into design matrix x and response y
@@ -10,17 +10,17 @@ function [x,y,masks] = afxPrepareDesign(design,space)
     y = nan(nPatients,nVoxels);
     for iPatient = 1:nPatients
         for iPredictor = 1:nPredictors
-            val = design.xRaw{iPatient,iPredictor};
+            val = design.patients(iPatient).xRaw{iPredictor};
             if isnumeric(val)
                 x(iPatient,iPredictor,:) = val;
             else
                 x(iPatient,iPredictor,:) = afxVolumeResample(val,space.XYZmm,1);
             end
         end
-        y(iPatient,:) = afxVolumeResample(design.yRaw{iPatient},space.XYZmm,0) > .5;
+        y(iPatient,:) = afxVolumeResample(design.patients(iPatient).yRaw,space.XYZmm,0) > .5;
         % if a patient has a old lesion, remove from x and y
-        if isfield(design,yRawOld) & ~isempty(design.yRawOld{iPatient})
-            ytmp = afxVolumeResample(design.yRawOld{iPatient},space.XYZmm,0) > .5;
+        if ~isempty(design.patients(iPatient).yRaw)
+            ytmp = afxVolumeResample(design.patients(iPatient).yRawOld,space.XYZmm,0) > .5;
             y(iPatient,ytmp) = 0;
             x(iPatient,:,ytmp) = NaN;
         end
