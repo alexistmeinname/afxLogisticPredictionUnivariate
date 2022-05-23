@@ -1,5 +1,6 @@
 function [x,design] = afxAddInteraction(x,design,interaction)
-
+    
+    % https://stats.stackexchange.com/questions/11645/coding-an-interaction-between-a-nominal-and-a-continuous-predictor-for-logistic
     for i = 1:length(interaction)
         idxInteraction(i) = find(strcmpi(design.predictors,interaction{i}),1);
         if isempty(idxInteraction(i))
