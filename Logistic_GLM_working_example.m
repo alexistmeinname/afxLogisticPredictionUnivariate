@@ -5,12 +5,14 @@ addpath('scripts');
 % daten liegen in data\Radiomics\input
 % ergebnisse in data\Radiomics\output
 %   - models: modelle (beta, t, masken, ...)
-%   - predictions: prï¿½diktionen (maps, prï¿½diktoren, info ï¿½ber fold, ...)
+%   - predictions: prädiktionen (maps, prädiktoren, info über fold, ...)
 % gerechnet wird im 2x2x2 mm space (n ~80000 voxel)
 
 % 2x2x2 mm voxel space, sehr kleines field of view (spart daten bei der
 % ausgabe)
-[~,space.XYZmm,space.dim,space.mat] = afxVolumeLoad('masks\space2mm_small.nii');
+%[~,space.XYZmm,space.dim,space.mat] = afxVolumeLoad('masks\space2mm_small.nii');
+[~,space.XYZmm,space.dim,space.mat] = afxVolumeLoad('masks\space3mm.nii');
+
 
 % beispieldesign laden
 load('design.mat');
@@ -18,15 +20,15 @@ load('design.mat');
 %        patients: {1ï¿½60 cell}
 %                  namen (ids) der patienten
 %      predictors: {'CT-N'  'CT-A'  'CBF'  'CBV'  'Tmax'  'tici'  'r2'}
-%                  namen der prï¿½diktoren (aus "cbf" wird die
-%                  perfusionsmaske extrahiert, "tici" wird fï¿½r die
-%                  mismatch-prï¿½diktion herangezogen
+%                  namen der prädiktoren (aus "cbf" wird die
+%                  perfusionsmaske extrahiert, "tici" wird für die
+%                  mismatch-prädiktion herangezogen
 %            xRaw: {60ï¿½7 cell}
 %                  design-matrix, tici und r2 sind hier zufallsdaten
 %            yRaw: {1ï¿½60 cell}
-%                  response, also lï¿½sionen (die altlï¿½sion muss noch ergï¿½nzt werden)
+%                  response, also läsionen (die altläsion muss noch ergänzt werden)
 %         dataDir: 'data\Radiomics'
-%                  ordner fï¿½r input und output
+%                  ordner für input und output
 %    analysisName: 'testanalyse'
 %            FWHM: 5
 %                  in mm
@@ -37,7 +39,8 @@ load('design.mat');
 %    minPerfusion: 1
 %                  mindestanzahl perfusionsdaten pro parameter (eigentlich: 10)
 %       minLesion: 0.1000
-%                  mindestlï¿½sionsabdeckung in % (eigentlich 0.05)
+%                  mindestläsionsabdeckung in % (eigentlich 0.05)
+design.xRaw(:,6) = num2cell(randi(2,length(design.patients),1)-1);
 pat = design.patients;
 design.patients = struct([]);
 for i = 1:length(pat)
@@ -47,9 +50,17 @@ for i = 1:length(pat)
     design.patients(i).xRaw = design.xRaw(i,:);
     design.patients(i).name = pat{i};
 end
+design = rmfield(design,'xRaw');
+design = rmfield(design,'yRaw');
+design.thresholdMaps(1).name = 'CBVrel';
+design.thresholdMaps(1).tici = 1;
+design.thresholdMaps(1).inverse = true;
+design.thresholdMaps(2).name = 'Tmax';
+design.thresholdMaps(2).tici = 0;
+design.thresholdMaps(2).inverse = false;
 tic;
 % design vorbereiten (images laden, maske generieren, smoothen)
-% das laden der daten habe ich lokal gemacht. auf broca dï¿½rfte es lï¿½nger
+% das laden der daten habe ich lokal gemacht. auf broca dürfte es länger
 % dauern
 [x,y,masks] = afxPrepareDesign(design,space);
 % intaraktionen
@@ -59,6 +70,6 @@ tic;
 % k-fold crossvalidation (fitting des glms, prediction, abspeichern aller
 % ergebnisse)
 [stats,predictions,mRSquared,design] = afxKFold(x,y,masks,space,design);
-toc; % ~ 15 minuten fï¿½r 60 pat, 7 prï¿½diktoren und ~70000 voxel, fï¿½r den vollen datensatz vmtl. 30-45 min, evtl. auch lï¿½nger
+toc; % ~ 15 minuten für 60 pat, 7 prädiktoren und ~70000 voxel, für den vollen datensatz vmtl. 30-45 min, evtl. auch länger
 
 rmpath('scripts');

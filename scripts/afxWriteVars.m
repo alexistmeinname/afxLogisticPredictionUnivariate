@@ -1,4 +1,4 @@
-function afxSaveVars(fname,names,vals)
+function afxWriteVars(fname,names,vals)
     fileID = fopen([fname '.txt'],'w');
     for i = 1:length(names)
         val = vals{i};

@@ -3,7 +3,7 @@ function [x,design] = afxAddInteraction(x,design,interaction)
     for i = 1:length(interaction)
         idxInteraction(i) = find(strcmpi(design.predictors,interaction{i}),1);
         if isempty(idxInteraction(i))
-            error(['Interaktion mit unbekanntem Prädiktor "' interaction{i} '".']);
+            error(['Interaktion mit unbekanntem Praediktor "' interaction{i} '".']);
         end
     end
     x(:,end+1,:) = prod(x(:,idxInteraction,:),2);

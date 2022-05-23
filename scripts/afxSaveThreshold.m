@@ -1,4 +1,4 @@
-function [] = afxSaveThreshold(thresholdMaps,masks,space,design)
+function [patients] = afxSaveThreshold(thresholdMaps,masks,space,design)
     % thresholdMaps(1).dat = data(nPat,nVox);
     % thresholdMaps(1).name = 'CBFrel';
     % thresholdMaps(1).inverse = true;
@@ -12,11 +12,11 @@ function [] = afxSaveThreshold(thresholdMaps,masks,space,design)
     prefix = 'Threshold_';
 
     % destination directory
-    destDir = fullfile(design.dataDir,'output','threshold',strcat(design.analysisName,'-s',num2str(design.FWHM)),'predictions');
+    destDir = fullfile(design.dataDir,'output',strcat(design.analysisName,'-s',num2str(design.FWHM)),'predictions');
     
     for iPatient = 1:length(design.patients)
         % patient dir
-        patDestDir = fullfile(destDir,design.patients(iPatient).name);
+        patDestDir = fullfile(destDir,design.patients(iPatient).name,'threshold');
         mkdir(patDestDir);
         % save cbf/tmax
         for iThrMap = 1:length(thresholdMaps)
@@ -29,7 +29,7 @@ function [] = afxSaveThreshold(thresholdMaps,masks,space,design)
         % save info
         optThrNames = strcat('optThr_',{ thresholdMaps.name });
         optThrVals = { thresholdMaps.optThr };
-        afxSaveVars(fullfile(patDestDir,[prefix 'info']),[{'fold' 'FWHM' 'minPerfusion' 'minLesion'} optThrNames],[{design.fold design.FWHM design.minPerfusion design.minLesion} optThrVals]);
+        afxWriteVars(fullfile(patDestDir,[prefix 'info']),[{'fold' 'FWHM' 'minPerfusion' 'minLesion'} optThrNames],[{design.fold design.FWHM design.minPerfusion design.minLesion} optThrVals]);
     end
     patients = design.patients;
 end

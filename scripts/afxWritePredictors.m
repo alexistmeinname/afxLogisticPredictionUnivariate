@@ -1,4 +1,4 @@
-function afxSavePredictors(fname,predictors,meanRSquared)
+function afxWritePredictors(fname,predictors,meanRSquared)
     fileID = fopen(fname,'w');
     fprintf(fileID,'no.  mean(RSquared)  name');
     predictors = [ 'intercept' predictors ];

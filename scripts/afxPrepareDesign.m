@@ -5,9 +5,10 @@ function [x,y,masks] = afxPrepareDesign(design,space)
     nVoxels = prod(space.dim);
 
     % load images into design matrix x and response y
+    s = tic;
     fprintf('Loading images ... ');
     x = nan(nPatients,nPredictors,nVoxels);
-    y = nan(nPatients,nVoxels);
+    y = false(nPatients,nVoxels);
     for iPatient = 1:nPatients
         for iPredictor = 1:nPredictors
             val = design.patients(iPatient).xRaw{iPredictor};
@@ -19,28 +20,30 @@ function [x,y,masks] = afxPrepareDesign(design,space)
         end
         y(iPatient,:) = afxVolumeResample(design.patients(iPatient).yRaw,space.XYZmm,0) > .5;
         % if a patient has a old lesion, remove from x and y
-        if ~isempty(design.patients(iPatient).yRaw)
+        if ~isempty(design.patients(iPatient).yRawOld)
             ytmp = afxVolumeResample(design.patients(iPatient).yRawOld,space.XYZmm,0) > .5;
             y(iPatient,ytmp) = 0;
             x(iPatient,:,ytmp) = NaN;
         end
     end
-    fprintf('done.\n');
+    fprintf('done (%.2f min).\n',toc(s)/60);
 
+    s = tic;
     fprintf('Preparing masks and smoothing data ... ');
     % create masks
     idxCBF = find(strcmpi(design.predictors,'cbf'),1);
     masks.perfusion = squeeze(sum(~isnan(x(:,idxCBF,:))))';
     masks.lesions = sum(y);
-    masks.analysis = masks.perfusion > design.minPerfusion*(nPredictors+1) & masks.lesions > nPatients*design.minLesion;
-    % mask data
-    x(:,:,~masks.analysis) = 0;
+    masks.analysis = (masks.perfusion > design.minPerfusion*(nPredictors+1)) & (masks.lesions > nPatients*design.minLesion);
+    % mask CT-N and CT-A
+    idxMaskBone = [find(strcmpi(design.predictors,'ct-n'),1) find(strcmpi(design.predictors,'ct-a'),1)];
+    x(:,idxMaskBone,~masks.analysis) = 0;
     % smoothing
-    for j = 1:size(x,2)
+    for j = find(cellfun(@isstr,design.patients(1).xRaw))
         x(:,j,:) = afxFastSmooth(x(:,j,:),design.FWHM,space.dim,space.mat);
     end
     % discard data outside mask
     y = y(:,masks.analysis);
     x = x(:,:,masks.analysis);
-    fprintf('done.\n');
+    fprintf('done (%.2f min).\n',toc(s)/60);
 end

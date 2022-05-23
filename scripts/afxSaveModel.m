@@ -41,5 +41,5 @@ function [meanRSquared] = afxSaveModel(stats,masks,space,scale,design)
     meanRSquared = nanmean([stats.t].^2./([stats.t].^2+[stats.dfe]),2);
     save(fullfile(destDir,strcat(prefix,'meanRSquared.mat')),'meanRSquared');
     % save info
-    afxSavePredictors(fullfile(destDir,strcat(prefix,'info.txt')),design.predictors,meanRSquared)
+    afxWritePredictors(fullfile(destDir,strcat(prefix,'info.txt')),design.predictors,meanRSquared)
 end

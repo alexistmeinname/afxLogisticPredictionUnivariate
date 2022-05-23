@@ -18,31 +18,40 @@ function [stats,predictions,mRSquared,design] = afxKFold(x,y,masks,space,design)
         idxTest = false(1,nPatients);
         idxTest(round(perFold*(iFold-1)+1):round(iFold*perFold)) = true;
         idxTrain = ~idxTest;
+        for i = find(idxTest), design.patients(i).fold = iFold; end
         % fit and save GLM (training data)
         [stats,scale] = afxLogisitcGLMfit(x(idxTrain,:,:),y(idxTrain,:));
         mRSquared(iFold,:) = afxSaveModel(stats,masks,space,scale,afxPartialDesign(design,idxTrain));
         % generate design matix for sucessfull and unsucessful reka and
         % predict
         idxTICI = find(strcmpi(design.predictors,'tici'),1);
-        xReka0 = x; xReka0(:,idxTICI,:) = 0;
-        predictions.reka0 = afxLogisticGLMval([stats.beta],xReka0(idxTest,:,:),scale);
-        clear xReka0;
-        xReka1 = x; xReka1(:,idxTICI,:) = 1;
-        predictions.reka1 = afxLogisticGLMval([stats.beta],xReka1(idxTest,:,:),scale);
-        clear xReka1;
+        xReka = x;
+        xReka(:,idxTICI,:) = 0;
+        predictions.reka0 = afxLogisticGLMval([stats.beta],xReka(idxTest,:,:),scale);
+        xReka(:,idxTICI,:) = 1;
+        predictions.reka1 = afxLogisticGLMval([stats.beta],xReka(idxTest,:,:),scale);
+        clear xReka;
         % calculate mismatch
         predictions.mismatch = predictions.reka0-predictions.reka1;
         % calculate threshold (min abs.vol.diff.)
         yfit = afxLogisticGLMval([stats.beta],x(idxTrain,:,:),scale);
         optThr = afxOptimalThreshold(yfit,y(idxTrain,:),.001,false);
         % save predictions
-        patientsNew = [patientsNew afxSavePredictions(predictions,y(idxTest,:),masks,space,afxPartialDesign(design,idxTest),optThr)];
+        patientsGLMTest = afxSavePredictions(predictions,y(idxTest,:),masks,space,afxPartialDesign(design,idxTest),optThr);
+        % threshold variant
+        thresholdMaps = afxThresholdModel(x,y,idxTrain,design,space,masks);
+        designTest = design; designTest.patients = patientsGLMTest;
+        for iThrMap = 1:length(thresholdMaps)
+            thresholdMaps(iThrMap).dat = thresholdMaps(iThrMap).dat(idxTest,:);
+        end
+        patientsNew = [patientsNew afxSaveThreshold(thresholdMaps,masks,space,designTest)];
     end
     % save mean R squared (mean of all folds)
-    destDir = fullfile(design.dataDir,'output',strcat(design.analysisName,'-s',num2str(design.FWHM)),'models');
-    afxSavePredictors(fullfile(destDir,'meanRSquared.txt'),design.predictors,mean(mRSquared));
+    destDir = fullfile(design.dataDir,'output',strcat(design.analysisName,'-s',num2str(design.FWHM)));
+    afxWritePredictors(fullfile(destDir,'models','meanRSquared.txt'),design.predictors,mean(mRSquared,1));
     % update design ()
     design.patients = patientsNew;
+    save(fullfile(destDir,'design.mat'),'design');
 end
 
 function design = afxPartialDesign(design,idx)
