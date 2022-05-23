@@ -2,9 +2,9 @@ function thresholdMaps = afxThresholdModel(x,y,idxTrain,design,space,masks)
 
     % get tici column
     idxTICI = find(strcmpi(design.predictors,'tici'),1);
-    % calculate CBVrel
+    % calculate CBFrel
     x(:,end+1,:) = afxCBVRel(x,y,design,space,masks);
-    design.predictors{end+1} = 'CBVRel';
+    design.predictors{end+1} = 'CBFRel';
     % get threshold map structure
     thresholdMaps = design.thresholdMaps;
     % obtain threshold maps and optimal thresholds

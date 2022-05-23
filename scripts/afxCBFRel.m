@@ -1,5 +1,5 @@
-function CBVRel = afxCBVRel(x,y,design,space,masks)
-    idxCBV = find(strcmpi(design.predictors,'CBV'),1);
+function CBVRel = afxCBFRel(x,y,design,space,masks)
+    idxCBV = find(strcmpi(design.predictors,'CBF'),1);
     CBVRel = nan(size(x,1),1,size(x,3));
     for iPatient = 1:size(x,1)
         tmpCBV = reshape(afxDeMask(masks.analysis,x(iPatient,idxCBV,:),NaN),space.dim);
