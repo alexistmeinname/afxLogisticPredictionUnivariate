@@ -9,6 +9,9 @@ function [stats,predictions,mRSquared,design] = afxKFold(x,y,masks,space,design)
     y = y(pIdx,:);
     % patients in testset per fold
     perFold = nPatients/design.nFold;
+    % copy design matrix before generating intaractions
+    xCopy = x;
+    [x,design] = afxAddInteractions(x,design);
     
     % perform folds
     patientsNew = struct([]);
@@ -23,13 +26,17 @@ function [stats,predictions,mRSquared,design] = afxKFold(x,y,masks,space,design)
         [stats,scale] = afxLogisitcGLMfit(x(idxTrain,:,:),y(idxTrain,:));
         mRSquared(iFold,:) = afxSaveModel(stats,masks,space,scale,afxPartialDesign(design,idxTrain));
         % generate design matix for sucessfull and unsucessful reka and
-        % predict
+        % predict (it's complicated, becaus all interactions need to be
+        % recalculated in the design matrix)
         idxTICI = find(strcmpi(design.predictors,'tici'),1);
-        xReka = x;
+        xReka = xCopy(idxTest,:,:);
         xReka(:,idxTICI,:) = 0;
-        predictions.reka0 = afxLogisticGLMval([stats.beta],xReka(idxTest,:,:),scale);
+        [xReka,~] = afxAddInteractions(xReka,design);
+        predictions.reka0 = afxLogisticGLMval([stats.beta],xReka,scale);
+        xReka = xCopy(idxTest,:,:);
         xReka(:,idxTICI,:) = 1;
-        predictions.reka1 = afxLogisticGLMval([stats.beta],xReka(idxTest,:,:),scale);
+        [xReka,~] = afxAddInteractions(xReka,design);
+        predictions.reka1 = afxLogisticGLMval([stats.beta],xReka,scale);
         clear xReka;
         % calculate mismatch
         predictions.mismatch = predictions.reka0-predictions.reka1;
