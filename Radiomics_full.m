@@ -22,7 +22,7 @@ for i = 1:length(FWHM)
     % daten laden
     [x,y,masks] = afxPrepareDesign(design,space);
     % intaraktionen
-     % k-fold crossvalidation (fitting des glms, prediction, abspeichern aller ergebnisse)
+    % k-fold crossvalidation (fitting des glms, prediction, abspeichern aller ergebnisse)
     [stats,predictions,mRSquared,design] = afxKFold(x,y,masks,space,design);
     fprintf('Elapsed time is %.1f min.\n',toc(s)/60);
 end
