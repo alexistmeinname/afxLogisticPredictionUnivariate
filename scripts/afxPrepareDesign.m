@@ -35,13 +35,14 @@ function [x,y,masks] = afxPrepareDesign(design,space)
     masks.perfusion = squeeze(sum(~isnan(x(:,idxCBF,:))))';
     masks.lesions = sum(y);
     masks.analysis = (masks.perfusion > design.minPerfusion*(nPredictors+1)) & (masks.lesions > nPatients*design.minLesion);
-    % % mask CT-N and CT-A
-    % idxMaskBone = [find(strcmpi(design.predictors,'ct-n'),1) find(strcmpi(design.predictors,'ct-a'),1)];
-    % x(:,idxMaskBone,~masks.analysis) = 0;
+    % replace NaNs with 0 before smoothing
+    xNaN = isnan(x);
+    x(xNaN) = 0;
     % smoothing
     for j = find(cellfun(@isstr,design.patients(1).xRaw))
         x(:,j,:) = afxFastSmooth(x(:,j,:),design.FWHM,space.dim,space.mat);
     end
+    x(xNaN) = NaN;
     % discard data outside mask
     y = y(:,masks.analysis);
     x = x(:,:,masks.analysis);
