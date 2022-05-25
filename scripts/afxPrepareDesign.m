@@ -1,4 +1,4 @@
-function [x,y,masks] = afxPrepareDesign(design,space)
+function [x,y,masks,design] = afxPrepareDesign(design,space)
 
     nPatients = length(design.patients);
     nPredictors = length(design.predictors);
@@ -32,6 +32,7 @@ function [x,y,masks] = afxPrepareDesign(design,space)
     fprintf('Preparing masks and smoothing data ... ');
     % create masks
     idxCBF = find(strcmpi(design.predictors,'cbf'),1);
+    x(x(:,idxCBF,:)==0) = NaN;
     masks.perfusion = squeeze(sum(~isnan(x(:,idxCBF,:))))';
     masks.lesions = sum(y);
     masks.analysis = (masks.perfusion > design.minPerfusion*(nPredictors+1)) & (masks.lesions > nPatients*design.minLesion);
@@ -46,5 +47,7 @@ function [x,y,masks] = afxPrepareDesign(design,space)
     % discard data outside mask
     y = y(:,masks.analysis);
     x = x(:,:,masks.analysis);
+    % add interactions
+    [x,design] = afxAddInteractions(x,design);
     fprintf('done (%.2f min).\n',toc(s)/60);
 end
