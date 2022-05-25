@@ -18,7 +18,7 @@ function [patientsTest,mRSquared] = afxPrediction(x,y,masks,space,design,idxTrai
     clear xReka;
     % calculate threshold (min abs.vol.diff.)
     yfit = afxLogisticGLMval([stats.beta],x(idxTrain,:,:),scale);
-    optThr = afxOptimalThreshold(yfit,y(idxTrain,:),.001,false);
+    optThr = afxOptimalThreshold(yfit,y(idxTrain,:),.01,false);
     % save predictions
     patientsTest = afxSavePredictions(predictions,y(idxTest,:),masks,space,afxPartialDesign(design,idxTest),optThr);
     % threshold variant
