@@ -21,8 +21,8 @@ function [meanRSquared] = afxSaveModel(stats,masks,space,scale,design)
     for iStat = 1:length(statNames)
         % get values and threshold
         val = [stats.(statNames{iStat})];
-        if strcmp(statNames{iStat},{'t'}),    val(val > 10) = 11; val(val < -10) = -11; end
-        if strcmp(statNames{iStat},{'beta'}), val(val > 20) = 21; val(val < -20) = -21; end
+        if strcmp(statNames{iStat},{'t'}),    val(val > 30) = 31; val(val < -30) = -31; end
+        if strcmp(statNames{iStat},{'beta'}), val(val > 30) = 31; val(val < -30) = -31; end
         % write to disk
         for iParam = 1:size(val,1)
             if size(val,1) == 1
