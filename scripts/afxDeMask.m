@@ -1,7 +1,7 @@
 function img = afxDeMask(mask,dat,val)
-    img = zeros(size(mask));
+    img = zeros(size(dat,1),size(mask,2));
     if exist('val','var')
         img(:) = val;
     end
-    img(mask) = dat;
+    img(:,mask) = dat;
 end
