@@ -22,7 +22,7 @@ for i = 1:length(FWHM)
     [x,y,masks,design] = afxPrepareDesign(design,space);
     % intaraktionen
     % k-fold crossvalidation (fitting des glms, prediction, abspeichern aller ergebnisse)
-    [stats,predictions,mRSquared,design] = afxKFold(x,y,masks,space,design);
+    afxKFold(x,y,masks,space,design);
     design.analysisName = strcat(design.analysisName,'-one-fold');
     afxPrediction(x,y,masks,space,design,true(1,length(design.patients)),false(1,length(design.patients)));
     fprintf('Elapsed time is %.1f min.\n',toc(s)/60);
