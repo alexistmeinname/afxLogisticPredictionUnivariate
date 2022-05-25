@@ -24,5 +24,6 @@ function boundaries = afxFindMinGrid(yfit,sumVol,inverse,boundaries,n)
     end
     %plot(thrs,absDiffs);
     [~,idx] = sort(absDiffs);
-    boundaries = sort(thrs(idx(1)+[-1 +1]));
+    d = thrs(2)-thrs(1);
+    boundaries = thrs(idx(1))+[-d d];
 end
