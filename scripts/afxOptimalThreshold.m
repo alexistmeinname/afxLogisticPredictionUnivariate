@@ -1,10 +1,11 @@
-function [optThr] = afxOptimalThreshold(yfit,y,tol,inverse)
+function [optThr,absDiff] = afxOptimalThreshold(yfit,y,tol,inverse)
     sumVol = nnz(y);
     boundaries = [ min(yfit(:))  max(yfit(:))];
     while abs(diff(boundaries)) > tol
         boundaries = afxFindMinGrid(yfit,sumVol,inverse,boundaries,10);
     end
     optThr = round(mean(boundaries),floor(-log10(tol)));
+    absDiff = afxAbsDiff(yfit,sumVol,optThr,inverse);
 end
     
 function absDiff = afxAbsDiff(yfit,sumVol,threshold,inverse)
