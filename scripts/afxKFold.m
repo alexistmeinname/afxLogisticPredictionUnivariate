@@ -1,4 +1,4 @@
-function [stats,predictions,mRSquared,design] = afxKFold(x,y,masks,space,design)
+function [design] = afxKFold(x,y,masks,space,design)
     
     nPatients = size(x,1);
     % shuffle design and data
