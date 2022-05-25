@@ -2,7 +2,7 @@ function [x,design] = afxEliminateFactor(x,design,factor)
 
     idxFactor = find(strcmpi(design.predictors,factor),1);
     if isempty(idxFactor)
-    	error(['Interaktion mit unbekanntem Praediktor "' factor '".']);
+    	error(['Unbekannter Praediktor "' factor '".']);
 	end
     x(:,idxFactor,:) = [];
     design.predictors(idxFactor) = [];
