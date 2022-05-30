@@ -1,8 +1,8 @@
-function CBVRel = afxCBFRel(x,y,design,space,masks)
+function CBFRel = afxCBFRel(x,y,design,space,masks)
 
     % find CBF
     idxCBF = find(strcmpi(design.predictors,'CBF'),1);
-    CBVRel = nan(size(x,1),1,size(x,3));
+    CBFRel = nan(size(x,1),1,size(x,3));
     for iPatient = 1:size(x,1)
         % get 3d CBF and 3d lesion
         tmpCBF = reshape(afxDeMask(masks.analysis,x(iPatient,idxCBF,:),NaN),space.dim);
@@ -12,14 +12,14 @@ function CBVRel = afxCBFRel(x,y,design,space,masks)
         rh = tmpLesion(ceil(end/2):end,:,:); rh = nansum(rh(:));
         % get CBF from unaffected hemisphere
         if lh > rh
-            tmpCBVHemi = (tmpCBF(ceil(end/2):end,:,:));
+            tmpCBFHemi = (tmpCBF(ceil(end/2):end,:,:));
         else
-            tmpCBVHemi = (tmpCBF(1:floor(end/2),:,:));
+            tmpCBFHemi = (tmpCBF(1:floor(end/2),:,:));
         end
         % mean CBF
-        tmpCBVHemiMean = nanmean(tmpCBVHemi(:));
+        tmpCBFHemiMean = nanmean(tmpCBFHemi(:));
         % CBFrel
-        tmpCBVRel = tmpCBF(:)./tmpCBVHemiMean;
-        CBVRel(iPatient,1,:) = tmpCBVRel(masks.analysis);
+        tmpCBFRel = tmpCBF(:)./tmpCBFHemiMean;
+        CBFRel(iPatient,1,:) = tmpCBFRel(masks.analysis);
     end
 end
