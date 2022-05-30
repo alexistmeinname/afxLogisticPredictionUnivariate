@@ -35,9 +35,15 @@ function [x,y,masks,design] = afxPrepareDesign(design,space)
     masks.perfusion = squeeze(sum(~isnan(x(:,idxCBF,:))))';
     masks.lesions = sum(y);
     masks.analysis = (masks.perfusion > design.minPerfusion*(nPredictors+1)) & (masks.lesions > nPatients*design.minLesion);
+    % make CBF implizit mask explizit
+    xZero = x == 0;
+    xCBF = false(size(x)); xCBF(:,idxCBF,:) = 1;
+    x(xZero & xCBF) = NaN;
     % replace NaNs with 0 before smoothing
     xNaN = isnan(x);
     x(xNaN) = 0;
+    % avoid cbf thesholding edge artifacts with low values due to smoothing
+    x(xNaN & xCBF) = 30; % (100 = group mean in unaffected hemisphere)
     % smoothing
     for j = find(cellfun(@isstr,design.patients(1).xRaw))
         x(:,j,:) = afxFastSmooth(x(:,j,:),design.FWHM,space.dim,space.mat);
