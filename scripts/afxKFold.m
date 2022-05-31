@@ -1,4 +1,4 @@
-function [design] = afxKFold(x,y,masks,space,design)
+function [fDesignOut] = afxKFold(x,y,masks,space,design)
     
     nPatients = size(x,1);
     % shuffle design and data
@@ -27,5 +27,6 @@ function [design] = afxKFold(x,y,masks,space,design)
     afxWritePredictors(fullfile(destDir,'models','meanRSquared.txt'),design.predictors,mean(mRSquared,1));
     % update and save design
     design.patients = patientsNew;
-    save(fullfile(destDir,'design.mat'),'design');
+    fDesignOut = fullfile(destDir,'design.mat');
+    save(fDesignOut,'design');
 end
