@@ -1,17 +1,15 @@
-function meanDist = afxEvalDist(a,b,masks,space)
+function meanDist = afxEvalDist(a,b,space)
     % b ... truth
     % a ... prediction
 
     meanDist = nan(1,size(a,1));
-    fprintf('Calculating Distances ... ')
     parfor iPatient = 1:size(a,1)
         % https://en.wikipedia.org/wiki/Hausdorff_distance
-        img1 = afxDeMask(masks.analysis,a(iPatient,:)) > .5;
-        img2 = afxDeMask(masks.analysis,b(iPatient,:)) > .5;
+        img1 = a(iPatient,:) > .5;
+        img2 = b(iPatient,:) > .5;
         d = afxDist(img1,img2,space);
         meanDist(iPatient) = mean(d);
     end
-    fprintf('done.\n');
 end
 
 function d = afxDist(img1,img2,space)
@@ -22,6 +20,7 @@ function d = afxDist(img1,img2,space)
     xyz1 = space.XYZmm(1:3,img1);
     xyz2 = space.XYZmm(1:3,img2);
     if isempty(xyz1) || isempty(xyz2)
+        d = NaN;
         return
     end
     len1 = size(xyz1,2);
