@@ -4,7 +4,7 @@ addpath('scripts');
 % rduction
 % #1: Tmax x tici
 % #2: sex
-% #2: tToImg
+% #3: tToImg
 
 FWHM = [5 9 13];
 
@@ -27,9 +27,9 @@ for i = 1:length(FWHM)
     [x,design] = afxEliminateFactor(x,design,'sex');
     [x,design] = afxEliminateFactor(x,design,'tToImg');
     % k-fold crossvalidation (fitting des glms, prediction, abspeichern aller ergebnisse)
-    afxKFold(x,y,masks,space,design);
-    design.analysisName = strcat(design.analysisName,'-one-fold');
-    afxPrediction(x,y,masks,space,design,true(1,length(design.patients)),false(1,length(design.patients)));
+    designFile = afxKFold(x,y,masks,space,design);
+    % evaluation
+    afxEvaluatePredictions(designFile);
     fprintf('Elapsed time is %.1f min.\n',toc(s)/60);
 end
 
