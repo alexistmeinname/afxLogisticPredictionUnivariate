@@ -23,7 +23,7 @@ function [] = afxEvaluatePredictions(designFile)
     % for every patient ...
     pct = floor(length(design.patients)/50);
     s = tic;
-    fprintf('Calculating evaluation metrics [');
+    fprintf('Calcul. eval. metrics [');
     for iPatient = 1:length(design.patients)
         % load groundtruth
         fileGroundtruth = design.patients(iPatient).predictions.groundtruth;
