@@ -34,7 +34,7 @@ function [x,y,masks,design] = afxPrepareDesign(design,space)
     idxCBF = find(strcmpi(design.predictors,'cbf'),1);
     masks.perfusion = squeeze(sum(~isnan(x(:,idxCBF,:))))';
     masks.lesions = sum(y);
-    masks.analysis = (masks.perfusion > design.minPerfusion*(nPredictors+1)) & (masks.lesions > nPatients*design.minLesion);
+    masks.analysis = (masks.perfusion > design.minPerfusion*(nPredictors+1+length(design.interactions))) & (masks.lesions > nPatients*design.minLesion);
     % make CBF implizit mask explizit
     xZero = x == 0;
     xCBF = false(size(x)); xCBF(:,idxCBF,:) = 1;
