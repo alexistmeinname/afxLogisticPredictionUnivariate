@@ -6,7 +6,7 @@ addpath('scripts');
 % #2: sex
 % #3: tToImg
 
-FWHM = [5 9 13];
+FWHM = [9 13 5];
 
 [~,space.XYZmm,space.dim,space.mat] = afxVolumeLoad('masks\space2mm_small.nii');
 
@@ -21,11 +21,11 @@ for i = 1:length(FWHM)
     design.minLesion = .05;     % minimum lesion coverage
     design.interactions(1).val = {'CBF' 'tici'};
     design.interactions(2).val = {'CBV' 'tici'};
+    % remove facors
+    [design] = afxEliminateFactor(design,'sex');
+    [design] = afxEliminateFactor(design,'tToImg');
     % daten laden
     [x,y,masks,design] = afxPrepareDesign(design,space);
-    % remove facors
-    [x,design] = afxEliminateFactor(x,design,'sex');
-    [x,design] = afxEliminateFactor(x,design,'tToImg');
     % k-fold crossvalidation (fitting des glms, prediction, abspeichern aller ergebnisse)
     designFile = afxKFold(x,y,masks,space,design);
     % evaluation
