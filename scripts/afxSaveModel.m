@@ -13,7 +13,7 @@ function [meanRSquared] = afxSaveModel(stats,masks,space,scale,design)
     % write masks
     maskNames = fieldnames(masks);
     for i = 1:length(maskNames)
-        afxVolumeWrite(fullfile(destDir,strcat(prefix,'mask_',maskNames{i},'.nii')),masks.(maskNames{i}),space.dim,'uint8',space.mat);
+        afxVolumeWrite(fullfile(destDir,strcat(prefix,'mask_',maskNames{i},'.nii')),masks.(maskNames{i}),space.dim,'int16',space.mat);
     end
 
     % write stats
