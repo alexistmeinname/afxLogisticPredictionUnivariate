@@ -30,15 +30,16 @@ function [x,y,masks,design] = afxPrepareDesign(design,space)
 
     s = tic;
     fprintf('Preparing masks and smoothing data ... ');
-    % create masks
+    % find cbf
     idxCBF = find(strcmpi(design.predictors,'cbf'),1);
-    masks.perfusion = squeeze(sum(~isnan(x(:,idxCBF,:))))';
-    masks.lesions = sum(y);
-    masks.analysis = (masks.perfusion > design.minPerfusion*(nPredictors+1+length(design.interactions))) & (masks.lesions > nPatients*design.minLesion);
     % make CBF implizit mask explizit
     xZero = x == 0;
     xCBF = false(size(x)); xCBF(:,idxCBF,:) = 1;
     x(xZero & xCBF) = NaN;
+    % create masks
+    masks.perfusion = squeeze(sum(~isnan(x(:,idxCBF,:))))';
+    masks.lesions = sum(y);
+    masks.analysis = (masks.perfusion > design.minPerfusion*(nPredictors+1+length(design.interactions))) & (masks.lesions > nPatients*design.minLesion);
     % replace NaNs with 0 before smoothing
     xNaN = isnan(x);
     x(xNaN) = 0;
