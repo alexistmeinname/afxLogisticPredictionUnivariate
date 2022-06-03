@@ -35,9 +35,13 @@ function [] = afxEvaluatePredictions(designFile)
         if tici == 1
             pred.GLM = design.patients(iPatient).predictions.glm(2);
             pred.Thr = design.patients(iPatient).predictions.thr(1);
+            pred.ThrFix = design.patients(iPatient).predictions.thr(1);
+            pred.ThrFix.optThr = 0.3; % CBFrel < 30 %
         else
             pred.GLM = design.patients(iPatient).predictions.glm(1);
             pred.Thr = design.patients(iPatient).predictions.thr(2);
+            pred.ThrFix = design.patients(iPatient).predictions.thr(2);
+            pred.ThrFix.optThr = 6; % Tmax > 6 s
         end
         % write name and predictors to table
         tbl(iPatient).name = design.patients(iPatient).name;
@@ -73,7 +77,7 @@ function [] = afxEvaluatePredictions(designFile)
             tbl(iPatient).(strcat(predictions{iPrediction},'_MCC')) = afxEvalMCC(dat.pred(dat.mask)',dat.gt(dat.mask)');
             tbl(iPatient).(strcat(predictions{iPrediction},'_Dist')) = afxEvalDist(dat.pred',dat.gt',space);
             %  vertical seperator
-            if iPrediction < length(predictions), tbl(iPatient).vsep3 = ' '; end
+            if iPrediction < length(predictions), tbl(iPatient).(strcat('vsep',num2str(iPrediction+2))) = ' '; end
         end
         if mod(iPatient,pct) == 0, fprintf('.'); end
     end
