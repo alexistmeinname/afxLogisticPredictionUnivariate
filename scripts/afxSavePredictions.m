@@ -20,7 +20,7 @@ function [patients] = afxSavePredictions(predictions,y,masks,space,design,optThr
             design.patients(iPatient).predictions.glm(iPrediction).inverse = false;
         end
         % save groundtruth
-        design.patients(iPatient).predictions.groundtruth = afxVolumeWrite(fullfile(patDestDir,'..','groundtruth_masked.nii'),afxDeMask(masks.analysis,y(iPatient,:) & ~isnan(predictions.(predNames{1})(iPatient,:))),space.dim,'uint8',space.mat);
+        design.patients(iPatient).predictions.groundtruth = afxVolumeWrite(fullfile(patDestDir,'..','groundtruth_masked.nii'),afxDeMask(masks.analysis,y(iPatient,:)),space.dim,'uint8',space.mat);
         % save predictors
         afxWriteVars(fullfile(patDestDir,[prefix 'predictors']),['intercept' design.predictors],[1 design.patients(iPatient).xRaw]);
         % save info
