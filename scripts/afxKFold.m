@@ -2,6 +2,7 @@ function [fDesignOut] = afxKFold(x,y,masks,space,design)
     
     nPatients = size(x,1);
     % shuffle design and data
+    rng(0);
     pIdx = randperm(nPatients);
     design.patients = design.patients(pIdx);
     x = x(pIdx,:,:);
@@ -23,8 +24,10 @@ function [fDesignOut] = afxKFold(x,y,masks,space,design)
         patientsNew = [patientsNew patientsTest];
     end
     % save mean R squared (mean of all folds)
+    design.foldsRSquared = mRSquared;
+    design.meanRSquared = mean(mRSquared,1);
     destDir = fullfile(design.dataDir,'output',strcat(design.analysisName,'-s',num2str(design.FWHM)));
-    afxWritePredictors(fullfile(destDir,'models','meanRSquared.txt'),design.predictors,mean(mRSquared,1));
+    afxWritePredictors(fullfile(destDir,'models','meanRSquared'),design.predictors,design.meanRSquared);
     % update and save design
     design.patients = patientsNew;
     fDesignOut = fullfile(destDir,'design.mat');

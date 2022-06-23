@@ -38,8 +38,7 @@ function [meanRSquared] = afxSaveModel(stats,masks,space,scale,design)
     % save other data (disign, meanRSquared, scale)
     save(fullfile(destDir,strcat(prefix,'design.mat')),'design');
     save(fullfile(destDir,strcat(prefix,'scale.mat')),'scale');
+    % save info/meanRSquares
     meanRSquared = nanmean([stats.t].^2./([stats.t].^2+[stats.dfe]),2);
-    save(fullfile(destDir,strcat(prefix,'meanRSquared.mat')),'meanRSquared');
-    % save info
-    afxWritePredictors(fullfile(destDir,strcat(prefix,'info.txt')),design.predictors,meanRSquared)
+    afxWritePredictors(fullfile(destDir,strcat(prefix,'meanRSquared')),design.predictors,meanRSquared)
 end
