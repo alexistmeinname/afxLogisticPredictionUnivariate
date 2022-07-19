@@ -1,10 +1,10 @@
 clear
 addpath('scripts');
 
-% rduction
+% reduction
 % #1: Tmax x tici
 
-FWHM = [5 9 13];
+FWHM = [9 13 5];
 
 [~,space.XYZmm,space.dim,space.mat] = afxVolumeLoad('masks\space2mm_small.nii');
 
@@ -19,6 +19,7 @@ for i = 1:length(FWHM)
     design.minLesion = .05;     % minimum lesion coverage
     design.interactions(1).val = {'CBF' 'tici'};
     design.interactions(2).val = {'CBV' 'tici'};
+    %design.interactions(3).val = {'Tmax' 'tici'};
     % daten laden
     [x,y,masks,design] = afxPrepareDesign(design,space);
     % k-fold crossvalidation (fitting des glms, prediction, abspeichern aller ergebnisse)

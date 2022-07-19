@@ -1,11 +1,11 @@
 clear
 addpath('scripts');
 
-% rduction
+% reduction
 % #1: Tmax x tici
 % #2: sex
-% #3: tToImg
-% #4: age
+% #3: age
+% #4: tToImg
 
 FWHM = [9 13 5];
 
@@ -22,10 +22,11 @@ for i = 1:length(FWHM)
     design.minLesion = .05;     % minimum lesion coverage
     design.interactions(1).val = {'CBF' 'tici'};
     design.interactions(2).val = {'CBV' 'tici'};
+    %design.interactions(3).val = {'Tmax' 'tici'};
     % remove facors
     [design] = afxEliminateFactor(design,'sex');
-    [design] = afxEliminateFactor(design,'tToImg');
     [design] = afxEliminateFactor(design,'age');
+    [design] = afxEliminateFactor(design,'tToImg');
     % daten laden
     [x,y,masks,design] = afxPrepareDesign(design,space);
     % k-fold crossvalidation (fitting des glms, prediction, abspeichern aller ergebnisse)

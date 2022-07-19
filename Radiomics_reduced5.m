@@ -4,7 +4,9 @@ addpath('scripts');
 % reduction
 % #1: Tmax x tici
 % #2: sex
-% #3: age
+% #3: tToImg
+% #4: age
+% #5: ct-a
 
 FWHM = [9 13 5];
 
@@ -14,7 +16,7 @@ for i = 1:length(FWHM)
     s = tic;
     % design
     load('data\Radiomics_Training_Leipzig\input\demographics\design.mat');
-    design.analysisName = 'reduced_model_03';
+    design.analysisName = 'reduced_model_05';
     design.FWHM = FWHM(i);      % spatial smoothing 5,9,13
     design.nFold = 5;           % number of folds in k-fold cross validation
     design.minPerfusion = 10;   % minimum perfusion maps per parameter
@@ -24,7 +26,9 @@ for i = 1:length(FWHM)
     %design.interactions(3).val = {'Tmax' 'tici'};
     % remove facors
     [design] = afxEliminateFactor(design,'sex');
+    [design] = afxEliminateFactor(design,'tToImg');
     [design] = afxEliminateFactor(design,'age');
+    [design] = afxEliminateFactor(design,'CT-A');
     % daten laden
     [x,y,masks,design] = afxPrepareDesign(design,space);
     % k-fold crossvalidation (fitting des glms, prediction, abspeichern aller ergebnisse)

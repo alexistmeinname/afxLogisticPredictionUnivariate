@@ -1,7 +1,7 @@
 clear
 addpath('scripts');
 
-% rduction
+% reduction
 % #1: Tmax x tici
 % #2: sex
 
@@ -20,6 +20,7 @@ for i = 1:length(FWHM)
     design.minLesion = .05;     % minimum lesion coverage
     design.interactions(1).val = {'CBF' 'tici'};
     design.interactions(2).val = {'CBV' 'tici'};
+    %design.interactions(3).val = {'Tmax' 'tici'};
     % remove facors
     [design] = afxEliminateFactor(design,'sex');
     % daten laden

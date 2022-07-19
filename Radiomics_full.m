@@ -1,7 +1,7 @@
 clear
 addpath('scripts');
 
-FWHM = [5 9 13];
+FWHM = [9 13 5];
 
 [~,space.XYZmm,space.dim,space.mat] = afxVolumeLoad('masks\space2mm_small.nii');
 
