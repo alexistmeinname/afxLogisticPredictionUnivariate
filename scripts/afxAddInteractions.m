@@ -1,5 +1,6 @@
 function [x,design] = afxAddInteractions(x,design)
-
+    % only works for two-way-interactions if at least on variable is encoded binary
+    
     % https://stats.stackexchange.com/questions/11645/coding-an-interaction-between-a-nominal-and-a-continuous-predictor-for-logistic
      for iInteracton = 1:length(design.interactions)
         % find all predictors
