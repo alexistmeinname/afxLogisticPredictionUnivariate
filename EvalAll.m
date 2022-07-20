@@ -43,7 +43,7 @@ for iTici = 1:length(ticiNames)
         end
     end
 
-    figure('units','normalized','outerposition',[0 0 .65 .85]);
+    figure('units','normalized','outerposition',[0 0 .85 .85]);
     ticiTitle = strcat('tici',ticiNames{iTici});
     sgtitle(ticiTitle);
     for iMetric = 1:length(metrics)
@@ -57,7 +57,7 @@ for iTici = 1:length(ticiNames)
         %errorbar([tblM.s9],[tblErr.s9])
         %errorbar([tblM.s13],[tblErr.s13])
         xticks(1:length(analysisNames));
-        xticklabels(strrep(analysisNames,'_',' '));
+        xticklabels(strrep(strrep(analysisNames,'_',' '),' model',''));
         xtickangle(45)
         if iMetric > 4
             legend({'5 mm' '9 mm' '13 mm'},'Location','northoutside');
@@ -68,5 +68,5 @@ for iTici = 1:length(ticiNames)
     
     destDir = fullfile(dat.design.design.dataDir,'output','evaluation');
     mkdir(destDir);
-    print(gcf,fullfile(destDir,[ticiTitle '.png']),'-dpng','-r150');
+    print(gcf,fullfile(destDir,[ticiTitle '.png']),'-dpng','-r120');
 end
