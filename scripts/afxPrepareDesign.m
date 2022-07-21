@@ -1,4 +1,8 @@
-function [x,y,masks,design] = afxPrepareDesign(design,space)
+function [x,y,masks,design] = afxPrepareDesign(design,space,idxMask)
+
+    if ~exist('idxMask','var')
+        idxMask = true(1,length(design.patients));
+    end
 
     nPatients = length(design.patients);
     nPredictors = length(design.predictors);
@@ -39,8 +43,8 @@ function [x,y,masks,design] = afxPrepareDesign(design,space)
     % mask lesion with individual perfusion mask
     y = squeeze(~isnan(x(:,idxCBF,:))).*y;
     % create masks
-    masks.perfusion = squeeze(sum(~isnan(x(:,idxCBF,:))))';
-    masks.lesions = sum(y);
+    masks.perfusion = squeeze(sum(~isnan(x(idxMask,idxCBF,:))))';
+    masks.lesions = sum(y(idxMask,:));
     masks.analysis = (masks.perfusion > design.minPerfusion*(nPredictors+1+length(design.interactions))) & (masks.lesions > nPatients*design.minLesion);
     % replace NaNs with 0 before smoothing
     xNaN = isnan(x); x(xNaN) = 0;
