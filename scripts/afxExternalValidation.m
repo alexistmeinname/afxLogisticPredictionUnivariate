@@ -8,6 +8,7 @@ function [fDesignOut] = afxExternalValidation(x,y,masks,space,design)
     [patientsTest,~] = afxPrediction(x,y,masks,space,design,idxTrain,idxTest);
     % update and save design
     design.patients = patientsTest;
+    destDir = fullfile(design.dataDir,'output',strcat(design.analysisName,'-s',num2str(design.FWHM)));
     fDesignOut = fullfile(destDir,'design.mat');
     save(fDesignOut,'design');
 end
