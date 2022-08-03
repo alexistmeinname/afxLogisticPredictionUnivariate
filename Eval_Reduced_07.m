@@ -80,6 +80,6 @@ for iTici = 1:length(ticiNames)
     
     destDir = fullfile('data','evaluation_reduced07');
     mkdir(destDir);
-    print(gcf,fullfile(destDir,[ticiTitle '.png']),'-dpng','-r120');
+    print(gcf,fullfile(destDir,['Evaluation_' ticiTitle '.png']),'-dpng','-r120');
 end
 rmpath('scripts');
