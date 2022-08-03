@@ -4,8 +4,8 @@ addpath('scripts');
 % reduction
 % #1: Tmax x tici
 % #2: sex
-% #3: tToImg
-% #4: age
+% #3: age
+% #4: tToImg
 % #5: ct-a
 % #6: ct-n
 % #7: nihss
@@ -28,8 +28,8 @@ for i = 1:length(FWHM)
     %design.interactions(3).val = {'Tmax' 'tici'};
     % remove facors
     [design] = afxEliminateFactor(design,'sex');
-    [design] = afxEliminateFactor(design,'tToImg');
     [design] = afxEliminateFactor(design,'age');
+    [design] = afxEliminateFactor(design,'tToImg');
     [design] = afxEliminateFactor(design,'CT-A');
     [design] = afxEliminateFactor(design,'CT-N');
     [design] = afxEliminateFactor(design,'nihss');

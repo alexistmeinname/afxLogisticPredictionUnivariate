@@ -50,9 +50,11 @@ for iTici = 1:length(ticiNames)
         % plot metric per FWHM and model
         subplot(2,4,iMetric)
         hold all;
+        plot([tblM.(metrics{iMetric}).s0])
         plot([tblM.(metrics{iMetric}).s5])
         plot([tblM.(metrics{iMetric}).s9])
         plot([tblM.(metrics{iMetric}).s13])
+        %errorbar([tblM.s5],[tblErr.s0])
         %errorbar([tblM.s5],[tblErr.s5])
         %errorbar([tblM.s9],[tblErr.s9])
         %errorbar([tblM.s13],[tblErr.s13])
@@ -60,7 +62,7 @@ for iTici = 1:length(ticiNames)
         xticklabels(strrep(strrep(analysisNames,'_',' '),' model',''));
         xtickangle(45)
         if iMetric > 4
-            legend({'5 mm' '9 mm' '13 mm'},'Location','northoutside');
+            legend({'0 mm' '5 mm' '9 mm' '13 mm'},'Location','northoutside');
             legend('boxoff')
         end
         title(strrep(metrics{iMetric},'_',' '));
