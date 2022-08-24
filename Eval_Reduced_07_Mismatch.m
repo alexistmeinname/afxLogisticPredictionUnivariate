@@ -8,10 +8,7 @@ methods = { 'GLM' 'Thr' };
 compartiments  = { 'core' 'penumbra' };
 tici = { 'tici0' 'tici1' };
 
-
 addpath('scripts');
-
-
 
 for iGroup = 1:length(dEval.GLM)
 	figure('units','normalized','outerposition',[0 0 .65 .65]);
@@ -26,13 +23,13 @@ for iGroup = 1:length(dEval.GLM)
         for iCompartiment = 1:length(compartiments)
             tmp = [dat.eval.tbl.([methods{iMethod} '_' compartiments{iCompartiment}])]';
             for iTici = 1:length(tici)
-                r.(tici{iTici}).(compartiments{iCompartiment}) = tmp(ticiScore == (iTici-1));
+                r.(methods{iMethod}).(tici{iTici}).(compartiments{iCompartiment}) = tmp(ticiScore == (iTici-1));
             end
         end
         % plot mismatch
         subplot(1,2,iMethod);
-        y1 = [ r.tici0.core r.tici0.penumbra ];
-        y2 = [ r.tici1.core r.tici1.penumbra ];
+        y1 = [ r.(methods{iMethod}).tici0.core r.(methods{iMethod}).tici0.penumbra ];
+        y2 = [ r.(methods{iMethod}).tici1.core r.(methods{iMethod}).tici1.penumbra ];
         y = nan(max(length(y1),length(y2)),4);
         y(1:length(y1),1:2) = y1;
         y(1:length(y2),3:4) = y2;
@@ -45,6 +42,7 @@ for iGroup = 1:length(dEval.GLM)
     destDir = fullfile('data','evaluation_reduced07');
     mkdir(destDir);
     print(gcf,fullfile(destDir,['Mismatch_' groupName '.png']),'-dpng','-r120');
+    save(fullfile(destDir,['Mismatch_' groupName '.mat']),'r')
 end
 
 
