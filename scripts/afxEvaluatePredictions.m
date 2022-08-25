@@ -21,7 +21,7 @@ function [] = afxEvaluatePredictions(designFile)
     dat.mask = dat.mask > .5;
     
     % for every patient ...
-    pct = floor(length(design.patients)/50);
+    pct = length(design.patients)/50;
     s = tic;
     fprintf('Calcul. eval. metrics [');
     for iPatient = 1:length(design.patients)
@@ -79,7 +79,7 @@ function [] = afxEvaluatePredictions(designFile)
             %  vertical seperator
             if iPrediction < length(predictions), tbl(iPatient).(strcat('vsep',num2str(iPrediction+2))) = ' '; end
         end
-        if mod(iPatient,pct) == 0, fprintf('.'); end
+        if mod(iPatient,pct) < 1, fprintf('.'); end
     end
     fprintf('] (%.2f min)\n',toc(s)/60);
     

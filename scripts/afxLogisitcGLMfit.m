@@ -19,7 +19,7 @@ function [stats,scale] = afxLogisitcGLMfit(x,y)
     x = (x-scale.mean)./scale.std;
     % fit logistic glm for every voxel
     stats = struct([]);
-    pct = floor(size(x,3)/50);
+    pct = size(x,3)/50;
     fprintf('Fitting logistic GLMs [');
     ws = warning('off');
     for iVoxel = 1:size(x,3)
@@ -27,7 +27,7 @@ function [stats,scale] = afxLogisitcGLMfit(x,y)
         stats(iVoxel).t = tmpstats.t;
         stats(iVoxel).dfe = tmpstats.dfe;
         stats(iVoxel).mse = nanmean(tmpstats.resid.^2);
-        if mod(iVoxel,pct) == 0, fprintf('.'); end
+        if mod(iVoxel,pct) < 1, fprintf('.'); end
     end
     warning(ws);
     fprintf('] (%.2f min)\n',toc(s)/60);
