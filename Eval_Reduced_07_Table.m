@@ -49,9 +49,8 @@ for iTici = 1:length(ticiNames)
         end
     end
 
-    figure('units','normalized','outerposition',[0 0 .85 .85]);
-    ticiTitle = strcat('tici',ticiNames{iTici});
-    sgtitle(ticiTitle);
+    fprintf('--- %s ----------------',ticiNames{iTici})
+    
     for iMetric = 1:length(metrics)/2
 
         yr(1).v = tblM.(metrics{iMetric})(3).s9';
@@ -66,25 +65,19 @@ for iTici = 1:length(ticiNames)
         end
 
         labels = {'Training LE GLM','Training LE Thr','Test LE GLM','Test LE Thr','Test DD GLM','Test DD Thr'};
-        colors = { [0,92,171]/255, [220,238,243]/355,  [0,92,171]/255, [220,238,243]/355, [0,92,171]/255, [220,238,243]/355,};
-        subplot(2,2,iMetric)
-        afxPlot2([1 2 3.5 4.5 6 7],y,labels,'',colors,90,.025,5);
-
+        
         p1 = signrank(y(:,1),y(:,2));
         p2 = signrank(y(:,3),y(:,4));
         p3 = signrank(y(:,5),y(:,6));
-        yl = ylim();
-        text(1.5,yl(2)*.975,sprintf('p = %.3f',p1),'HorizontalAlignment','center','FontSize',8);
-        text(4.0,yl(2)*.975,sprintf('p = %.3f',p2),'HorizontalAlignment','center','FontSize',8);
-        text(6.5,yl(2)*.975,sprintf('p = %.3f',p3),'HorizontalAlignment','center','FontSize',8);
+
+        [~,~,ci] = ttest(y);
         
-        %legend({'GLM (9 mm)','Threshold (5 mm)'},'Location','northoutside');
-        %legend('boxoff');
-        title(strrep(metrics{iMetric}(5:end),'_',' '));
+        disp(' ')
+        disp(metrics{iMetric}(5:end))
+        disp([' ', labels; 'val = ', num2cell(nanmean(y));[{'ci = ';' '} num2cell(ci)];{'p = ' [] p1 [] p2 [] p3}])
+        
+
     end
     
-    destDir = fullfile('data','evaluation_reduced07');
-    mkdir(destDir);
-    print(gcf,fullfile(destDir,['Evaluation_' ticiTitle '.png']),'-dpng','-r120');
 end
 rmpath('scripts');

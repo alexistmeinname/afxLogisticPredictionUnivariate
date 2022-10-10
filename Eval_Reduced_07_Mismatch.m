@@ -14,6 +14,9 @@ for iGroup = 1:length(dEval.GLM)
 	figure('units','normalized','outerposition',[0 0 .65 .65]);
     dat.design = load(fullfile(dEval.GLM(iGroup).folder,'..\design.mat'));
    	[~,groupName] = fileparts(dat.design.design.dataDir);
+    if contains(dat.design.design.analysisName,'excl_tici_2a')
+        groupName = strcat(groupName,'_excl_tici_2a');
+    end
    	sgtitle(strrep(groupName,'_',' '));
     for iMethod = 1:length(methods)
         % load evaluation metrics and design
@@ -39,7 +42,7 @@ for iGroup = 1:length(dEval.GLM)
         ylim([-.04 1.04])
     end
     % save figure
-    destDir = fullfile('data','evaluation_reduced07');
+    destDir = fullfile('data','evaluation_reduced07_mismatch');
     mkdir(destDir);
     print(gcf,fullfile(destDir,['Mismatch_' groupName '.png']),'-dpng','-r120');
     save(fullfile(destDir,['Mismatch_' groupName '.mat']),'r')

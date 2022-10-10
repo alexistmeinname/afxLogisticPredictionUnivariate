@@ -54,10 +54,6 @@ for iTici = 1:length(ticiNames)
         plot([tblM.(metrics{iMetric}).s5])
         plot([tblM.(metrics{iMetric}).s9])
         plot([tblM.(metrics{iMetric}).s13])
-        %errorbar([tblM.s5],[tblErr.s0])
-        %errorbar([tblM.s5],[tblErr.s5])
-        %errorbar([tblM.s9],[tblErr.s9])
-        %errorbar([tblM.s13],[tblErr.s13])
         xticks(1:length(analysisNames));
         xticklabels(strrep(strrep(analysisNames,'_',' '),' model',''));
         xtickangle(45)
@@ -68,7 +64,7 @@ for iTici = 1:length(ticiNames)
         title(strrep(metrics{iMetric},'_',' '));
     end
     
-    destDir = fullfile(dat.design.design.dataDir,'output','evaluation');
-    mkdir(destDir);
-    print(gcf,fullfile(destDir,[ticiTitle '.png']),'-dpng','-r120');
+    %destDir = fullfile(dat.design.design.dataDir,'output','evaluation');
+    %mkdir(destDir);
+    %print(gcf,fullfile(destDir,[ticiTitle '.png']),'-dpng','-r120');
 end
