@@ -22,15 +22,17 @@ reduce(9).val = 1; % CBV x tici
 reduce(10).type = 'factor';
 reduce(10).val = 'CBV';
 
-FWHM = [9 13 5 0];
+FWHM = [9 13 5 0];     
 
 [~,space.XYZmm,space.dim,space.mat] = afxVolumeLoad('masks\space2mm_small.nii');
 
-for iReduce = 0:length(reduce)
+
+for iReduce = 0:0 %length(reduce)
     for iFWHM = 1:length(FWHM)
         s = tic;
-        % design
-        load('data\Radiomics_Training_Leipzig\input\demographics\design.mat');
+        % get design 
+        load('data\Radiomics_Training_Leipzig\input\demographics\design_bm1.mat'); 
+        design.patients = design.patients(1:10);
         if iReduce == 0
             design.analysisName = 'full_model';
         else
@@ -53,13 +55,18 @@ for iReduce = 0:length(reduce)
                 error('something went wrong.');
             end
         end
+        
         % daten laden
-        [x,y,masks,design] = afxPrepareDesign(design,space);
-        % k-fold crossvalidation (fitting des glms, prediction, abspeichern aller ergebnisse)
+        brainmask = 'masks\brainmask.nii';
+        [x,y,masks,design] = afxPrepareDesign(design,space,brainmask);
+        % k-fold crossvalidation 
         designFile = afxKFold(x,y,masks,space,design);
         % evaluation
         afxEvaluatePredictions(designFile);
         fprintf('Elapsed time is %.1f min.\n',toc(s)/60);
+        
+        %free up memory
+        clearvars -except FWHM iFWHM reduce iReduce space
     end
 end
 

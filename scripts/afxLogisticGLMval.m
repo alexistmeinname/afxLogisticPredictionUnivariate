@@ -8,14 +8,20 @@ function [yfit] = afxLogisticGLMval(betas,x,scale)
     % predicts responses based using logistic GLM
     % yfit  ... predicted responses (observations x voxels)
     
+     % reshape input data (x)  and clear x (for freeing memory)
+    x = afxReshapeData(x);
+  
+    % delete observations with NaNs
+    xnan = any(isnan(x),2);
+    x(xnan,:) = [];
+    
     % scale x
     if ~isempty(scale)
         x = (x-scale.mean)./scale.std;
     end
-    % initialize yfit
-    yfit = nan(size(x,1),size(x,3));
-    % predict response for every voxel
-    for iVoxel = 1:size(x,3)
-        yfit(:,iVoxel) = glmval(betas(:,iVoxel),x(:,:,iVoxel),'logit');
-    end
+    
+  
+    % predict response
+    yfit = glmval(betas,x,'logit');
+    
 end

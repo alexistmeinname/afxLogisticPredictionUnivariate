@@ -13,22 +13,36 @@ function [stats,scale] = afxLogisitcGLMfit(x,y)
     % NaNs in x or y are treated as missing values
 
     s = tic;
+    % fit logistic glm for every voxel
+    fprintf('Fitting logistic GLMs [');
+    ws = warning('off');
+  
+    % reshape input data (x, y) and clear x,y (for freeing memory)
+    [x,y] = afxReshapeData(x,y);
+    
+    % delete observations with NaNs
+    xnan = any(isnan(x),2);
+    x(xnan,:) = [];
+    y(xnan) = [];
+    
+    % random stratified undersampling
+    idxOverweigt = y==round(mean(y));
+    nDel = nnz(idxOverweigt)-nnz(~idxOverweigt);
+    idxOverweigt = find(idxOverweigt);
+    idxOverweigt = idxOverweigt(randperm(nnz(idxOverweigt)));
+    idxDel = idxOverweigt(1:nDel);
+    x(idxDel,:) = [];
+    y(idxDel) = [];
+    
     % scale input data
     scale.mean = nanmean(x,1);
     scale.std = nanstd(x,1);
     x = (x-scale.mean)./scale.std;
-    % fit logistic glm for every voxel
-    stats = struct([]);
-    pct = size(x,3)/50;
-    fprintf('Fitting logistic GLMs [');
-    ws = warning('off');
-    for iVoxel = 1:size(x,3)
-        [stats(iVoxel).beta,~,tmpstats] = glmfit(x(:,:,iVoxel),y(:,iVoxel),'binomial','link','logit');
-        stats(iVoxel).t = tmpstats.t;
-        stats(iVoxel).dfe = tmpstats.dfe;
-        stats(iVoxel).mse = nanmean(tmpstats.resid.^2);
-        if mod(iVoxel,pct) < 1, fprintf('.'); end
-    end
+    
+    % fit GLM
+    [b,~,statistics] = glmfit(x,y,'binomial','link','logit');
+    stats = struct('t',{statistics.t},'beta',{b},'dfe',{statistics.dfe},'mse',{nanmean(statistics.resid.^2)});
+
     warning(ws);
     fprintf('] (%.2f min)\n',toc(s)/60);
 end
