@@ -1,4 +1,4 @@
-function [x,y,masks,design] = afxPrepareDesign(design,space,brainmask,idxMask)
+function [x,y,masks,design] = afxPrepareDesign(design,space,gmMask,idxMask)
 
     if ~exist('idxMask','var')
         idxMask = true(1,length(design.patients)); 
@@ -45,7 +45,7 @@ function [x,y,masks,design] = afxPrepareDesign(design,space,brainmask,idxMask)
     % create masks
     masks.perfusion = squeeze(sum(~isnan(x(idxMask,idxCBF,:))))';
     masks.lesions = sum(y(idxMask,:));
-    masks.analysis = logical(round(afxVolumeResample(brainmask,space.XYZmm,1)'));
+    masks.analysis = logical(round(afxVolumeResample(gmMask,space.XYZmm,1)'));
     masks.informative = (masks.perfusion > design.minPerfusion*(nPredictors+1+length(design.interactions))) & (masks.lesions > nPatients*design.minLesion);
     % replace NaNs with 0 before smoothing
     xNaN = isnan(x); x(xNaN) = 0;

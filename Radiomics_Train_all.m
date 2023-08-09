@@ -31,7 +31,7 @@ for iReduce = 0:0 %length(reduce)
     for iFWHM = 1:length(FWHM)
         s = tic;
         % get design 
-        load('data\Radiomics_Training_Leipzig\input\demographics\design_bm1.mat'); 
+        load('data\Radiomics_Training_Leipzig\input\demographics\design.mat'); 
         design.patients = design.patients(1:10);
         if iReduce == 0
             design.analysisName = 'full_model';
@@ -45,6 +45,9 @@ for iReduce = 0:0 %length(reduce)
         design.interactions(1).val = {'CBF' 'tici'};
         design.interactions(2).val = {'CBV' 'tici'};
         design.interactions(3).val = {'Tmax' 'tici'};
+        design.interactions(4).val = {'CBF' 'gmMask'};
+        design.interactions(5).val = {'CBV' 'gmMask'};
+        design.interactions(6).val = {'Tmax' 'gmMask'};
         % reduce model
         for i = 1:iReduce
             if strcmp(reduce(i).type,'interaction')
@@ -57,8 +60,8 @@ for iReduce = 0:0 %length(reduce)
         end
         
         % daten laden
-        brainmask = 'masks\brainmask.nii';
-        [x,y,masks,design] = afxPrepareDesign(design,space,brainmask);
+        gmMmask = 'masks\gmMask.nii';
+        [x,y,masks,design] = afxPrepareDesign(design,space,gmMmask);
         % k-fold crossvalidation 
         designFile = afxKFold(x,y,masks,space,design);
         % evaluation
