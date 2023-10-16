@@ -45,7 +45,6 @@ function [x,y,masks,design] = afxPrepareDesign(design,space,gmMask,brainMask,idx
     % create masks
     masks.perfusion = squeeze(sum(~isnan(x(idxMask,idxCBF,:))))';
     masks.lesions = sum(y(idxMask,:));
-    masks.gm = afxVolumeResample(gmMask,space.XYZmm,1)';
     masks.analysis = afxVolumeResample(brainMask,space.XYZmm,1)';
     masks.informative = (masks.perfusion > design.minPerfusion*(nPredictors+1+length(design.interactions))) & (masks.lesions > nPatients*design.minLesion);
     % replace NaNs with 0 before smoothing
