@@ -1,4 +1,4 @@
-function [x,y,masks,design] = afxPrepareDesign(design,space,gmMask,brainMask,idxMask)
+function [x,y,masks,design] = afxPrepareDesign(design,space,brainMask,idxMask)
 
     if ~exist('idxMask','var')
         idxMask = true(1,length(design.patients)); 
