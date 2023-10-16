@@ -1,6 +1,8 @@
 clear
 addpath('scripts');
 
+brainMask = fullfile('masks','brainmask.nii') % https://github.com/afx1337/afxStat/blob/main/masks/brainmask.nii
+
 reduce(1).type = 'interaction';
 reduce(1).val = 3; % Tmax x tici
 reduce(2).type = 'factor';
@@ -61,7 +63,7 @@ for iReduce = 0:0 %length(reduce)
         
         % daten laden
         gmMmask = 'masks\gmMask.nii';
-        [x,y,masks,design] = afxPrepareDesign(design,space,gmMmask);
+        [x,y,masks,design] = afxPrepareDesign(design,space,gmMmask,brainMask);
         % k-fold crossvalidation 
         designFile = afxKFold(x,y,masks,space,design);
         % evaluation
