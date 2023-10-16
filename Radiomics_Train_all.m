@@ -62,8 +62,7 @@ for iReduce = 0:0 %length(reduce)
         end
         
         % daten laden
-        gmMmask = 'masks\gmMask.nii';
-        [x,y,masks,design] = afxPrepareDesign(design,space,gmMmask,brainMask);
+        [x,y,masks,design] = afxPrepareDesign(design,space,brainMask);
         % k-fold crossvalidation 
         designFile = afxKFold(x,y,masks,space,design);
         % evaluation
