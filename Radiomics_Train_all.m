@@ -1,7 +1,7 @@
 clear
 addpath('scripts');
 
-brainMask = fullfile('masks','brainmask.nii') % https://github.com/afx1337/afxStat/blob/main/masks/brainmask.nii
+ % https://github.com/afx1337/afxStat/blob/main/masks/brainmask.nii
 
 reduce(1).type = 'interaction';
 reduce(1).val = 3; % Tmax x tici
@@ -20,21 +20,30 @@ reduce(7).val = 'nihss';
 reduce(8).type = 'interaction';
 reduce(8).val = 1; % CBF x tici
 reduce(9).type = 'interaction';
-reduce(9).val = 1; % CBV x tici
+reduce(9).val = 2; % CBV x tici
 reduce(10).type = 'factor';
 reduce(10).val = 'CBV';
+reduce(11).type ='interaction';
+reduce(11).val = 6; %Tmax x gTPM
+reduce(12).type = 'interaction';
+reduce(12).val = 4; %CBF x gTPM
+reduce(13).type = 'interaction';
+reduce(13).val = 5; %CBV x gTPM
+reduce(14).type = 'factor';
+reduce(14).val = 'gmTPM';
 
 FWHM = [9 13 5 0];     
 
 [~,space.XYZmm,space.dim,space.mat] = afxVolumeLoad('masks\space2mm_small.nii');
 
 
-for iReduce = 0:0 %length(reduce)
+for iReduce = 5:length(reduce)
     for iFWHM = 1:length(FWHM)
         s = tic;
         % get design 
         load('data\Radiomics_Training_Leipzig\input\demographics\design.mat'); 
-        design.patients = design.patients(1:10);
+        brainMask = fullfile('masks','brainmask.nii')
+        %design.patients = design.patients(1:20);
         if iReduce == 0
             design.analysisName = 'full_model';
         else
@@ -47,9 +56,9 @@ for iReduce = 0:0 %length(reduce)
         design.interactions(1).val = {'CBF' 'tici'};
         design.interactions(2).val = {'CBV' 'tici'};
         design.interactions(3).val = {'Tmax' 'tici'};
-        design.interactions(4).val = {'CBF' 'gmMask'};
-        design.interactions(5).val = {'CBV' 'gmMask'};
-        design.interactions(6).val = {'Tmax' 'gmMask'};
+        design.interactions(4).val = {'CBF' 'gmTPM'}; %interaction with grey matter probability map
+        design.interactions(5).val = {'CBV' 'gmTPM'};
+        design.interactions(6).val = {'Tmax' 'gmTPM'};
         % reduce model
         for i = 1:iReduce
             if strcmp(reduce(i).type,'interaction')

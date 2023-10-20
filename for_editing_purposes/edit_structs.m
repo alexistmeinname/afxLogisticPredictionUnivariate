@@ -6,14 +6,15 @@ load('\\medizin.uni-leipzig.de\data\Users\GroosAl\Eigene Dateien\MATLAB\afxLogis
 %adding column to cellarray-fiel in substruct
 for ipatient = 1: length(design.patients)
   xRaws = design.patients(ipatient).xRaw;
-  xRaws(end+1) = {'masks\brainmask.nii'};
+  xRaws(11) = {'masks\gmTPM.nii'};
   design.patients(ipatient).xRaw = xRaws;
 end
-%adding predictor
+
+% adding predictor
 predictors = design.predictors;
-predictors(end+1) = {'brainmask'};
+predictors(end+1) = {'gmTPM'};
 design.predictors = predictors;
 
 %saving struct to file
-save('design_bm1.mat','design')
+save('design.mat','design')
 

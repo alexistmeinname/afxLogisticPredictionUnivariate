@@ -11,7 +11,6 @@ function [stats,scale] = afxLogisitcGLMfit(x,y)
     % scale      ... scale factors for x (scale.mean, scale.std)
     %
     % NaNs in x or y are treated as missing values
-
     s = tic;
     % fit logistic glm for every voxel
     fprintf('Fitting logistic GLMs [');
@@ -38,6 +37,7 @@ function [stats,scale] = afxLogisitcGLMfit(x,y)
     scale.mean = nanmean(x,1);
     scale.std = nanstd(x,1);
     x = (x-scale.mean)./scale.std;
+   
     
     % fit GLM
     [b,~,statistics] = glmfit(x,y,'binomial','link','logit');

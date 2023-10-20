@@ -11,10 +11,7 @@ function thresholdMaps = afxThresholdModel(x,y,idxTrain,design,space,masks)
     for iThreshold = 1:length(design.thresholdMaps)
         idxThr = find(strcmpi(design.predictors,design.thresholdMaps(iThreshold).name),1);
         idxOptThr = idxTrain & x(:,idxTICI,1)' == design.thresholdMaps(iThreshold).tici;
-        
-        squeezed = squeeze(x(idxOptThr,idxThr,:));
-        squeezedfit = squeezed(:);
-        thresholdMaps(iThreshold).optThr = afxOptimalThreshold(squeezedfit,y(idxOptThr,:),.01,design.thresholdMaps(iThreshold).inverse);
+        thresholdMaps(iThreshold).optThr = afxOptimalThreshold(squeeze(x(idxOptThr,idxThr,:)),y(idxOptThr,:),.01,design.thresholdMaps(iThreshold).inverse);
         thresholdMaps(iThreshold).dat = x(:,idxThr,:);
     end
 end
