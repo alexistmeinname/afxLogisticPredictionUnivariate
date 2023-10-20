@@ -6,38 +6,38 @@ addpath('scripts');
 reduce(1).type = 'interaction';
 reduce(1).val = 3; % Tmax x tici
 reduce(2).type = 'factor';
-reduce(2).val = 'sex';
+reduce(2).val = 'CT-A';
 reduce(3).type = 'factor';
-reduce(3).val = 'age';
+reduce(3).val = 'sex';
 reduce(4).type = 'factor';
-reduce(4).val = 'tToImg';
+reduce(4).val = 'age';
 reduce(5).type = 'factor';
-reduce(5).val = 'CT-A';
-reduce(6).type = 'factor';
-reduce(6).val = 'CT-N';
-reduce(7).type = 'factor';
-reduce(7).val = 'nihss';
+reduce(5).val = 'tToImg';
+reduce(6).type = 'interaction';
+reduce(6).val = 4; %CBF x gmTPM
+reduce(7).type ='interaction';
+reduce(7).val = 6; %Tmax x gTPM
 reduce(8).type = 'interaction';
-reduce(8).val = 1; % CBF x tici
-reduce(9).type = 'interaction';
-reduce(9).val = 2; % CBV x tici
+reduce(8).val = 5; %CBV x gTPM
+reduce(9).type = 'factor';
+reduce(9).val = 'gmTPM'; % actually very small mean r^2, but can't be deleted before interactions
 reduce(10).type = 'factor';
-reduce(10).val = 'CBV';
-reduce(11).type ='interaction';
-reduce(11).val = 6; %Tmax x gTPM
+reduce(10).value = 'CT-N';
+reduce(11).type = 'interaction';
+reduce(11).val = 1; % CBF x tici
 reduce(12).type = 'interaction';
-reduce(12).val = 4; %CBF x gTPM
-reduce(13).type = 'interaction';
-reduce(13).val = 5; %CBV x gTPM
+reduce(12).val = 2; % CBV x tici
+reduce(13).type = 'factor';
+reduce(13).val = 'nihss';
 reduce(14).type = 'factor';
-reduce(14).val = 'gmTPM';
+reduce(14).val = 'CBV';
 
 FWHM = [9 13 5 0];     
 
 [~,space.XYZmm,space.dim,space.mat] = afxVolumeLoad('masks\space2mm_small.nii');
 
 
-for iReduce = 5:length(reduce)
+for iReduce = 4:length(reduce)
     for iFWHM = 1:length(FWHM)
         s = tic;
         % get design 
