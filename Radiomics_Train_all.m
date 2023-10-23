@@ -14,15 +14,15 @@ reduce(4).val = 'age';
 reduce(5).type = 'factor';
 reduce(5).val = 'tToImg';
 reduce(6).type = 'interaction';
-reduce(6).val = 4; %CBF x gmTPM
+reduce(6).val = 3; %CBF x gmTPM index after reducing Tmax x tici (line 63-65)
 reduce(7).type ='interaction';
-reduce(7).val = 6; %Tmax x gTPM
+reduce(7).val = 4; %Tmax x gTPM
 reduce(8).type = 'interaction';
-reduce(8).val = 5; %CBV x gTPM
+reduce(8).val = 3; %CBV x gTPM
 reduce(9).type = 'factor';
 reduce(9).val = 'gmTPM'; % actually very small mean r^2, but can't be deleted before interactions
 reduce(10).type = 'factor';
-reduce(10).value = 'CT-N';
+reduce(10).val = 'CT-N';
 reduce(11).type = 'interaction';
 reduce(11).val = 1; % CBF x tici
 reduce(12).type = 'interaction';
@@ -37,12 +37,12 @@ FWHM = [9 13 5 0];
 [~,space.XYZmm,space.dim,space.mat] = afxVolumeLoad('masks\space2mm_small.nii');
 
 
-for iReduce = 4:length(reduce)
+for iReduce = 1:length(reduce)
     for iFWHM = 1:length(FWHM)
         s = tic;
         % get design 
         load('data\Radiomics_Training_Leipzig\input\demographics\design.mat'); 
-        brainMask = fullfile('masks','brainmask.nii')
+        brainMask = fullfile('masks','brainmask.nii');
         %design.patients = design.patients(1:20);
         if iReduce == 0
             design.analysisName = 'full_model';
