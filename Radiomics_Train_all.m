@@ -19,7 +19,7 @@ reduce(7).type ='interaction';
 reduce(7).val = 4; %Tmax x gmTPM
 reduce(8).type = 'interaction';
 reduce(8).val = 3; %CBV x gmTPM
-reduce(9).type = 'factor';CBV
+reduce(9).type = 'factor'; 
 reduce(9).val = 'gmTPM'; % actually very small mean r^2, but can't be deleted before interactions
 reduce(10).type = 'factor';
 reduce(10).val = 'CT-N';
@@ -37,13 +37,13 @@ FWHM = [9 13 5 0];
 [~,space.XYZmm,space.dim,space.mat] = afxVolumeLoad('masks\space2mm_small.nii');
 
 
-for iReduce = 12:length(reduce)
+for iReduce = 0:0%length(reduce)
     for iFWHM = 1:length(FWHM)
         s = tic;
         % get design 
-        load('data\Radiomics_Training_Leipzig\input\demographics\design.mat'); 
+        load('data\Radiomics_Training_Leipzig\input\demographics\designUnivariat.mat'); 
         brainMask = fullfile('masks','brainmask.nii');
-        %design.patients = design.patients(10:20);
+        %design.patients = design.patients(1:40);
         if iReduce == 0
             design.analysisName = 'full_model';
         else
