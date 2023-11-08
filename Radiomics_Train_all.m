@@ -37,13 +37,13 @@ FWHM = [9 13 5 0];
 [~,space.XYZmm,space.dim,space.mat] = afxVolumeLoad('masks\space2mm_small.nii');
 
 
-for iReduce = 0:0%length(reduce)
+for iReduce = 0:length(reduce)
     for iFWHM = 1:length(FWHM)
         s = tic;
         % get design 
-        load('data\Radiomics_Training_Leipzig\input\demographics\designUnivariat.mat'); 
+        load('data\Radiomics_Training_Leipzig\input\demographics\design.mat'); 
         brainMask = fullfile('masks','brainmask.nii');
-        %design.patients = design.patients(1:40);
+        %design.patients = design.patients(1:30);
         if iReduce == 0
             design.analysisName = 'full_model';
         else

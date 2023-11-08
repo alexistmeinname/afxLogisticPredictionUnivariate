@@ -22,17 +22,9 @@ function [fDesignOut] = afxKFold(x,y,masks,space,design)
         %create Lesion Probability Map for each fold ( = for each voxel the
         %probability for a lesion based on the subset of patients included
         %in the fold)
-        nLesions = sum(y(idxTrain,:),1); %number of observed lesions in voxel
-        LPM = nLesions./size(y(idxTrain,:),1); % P(lesion) = nlesions /nObservations
-        % smooth LPM & add to predictors 
-        LPM = afxDeMask(masks.analysis,LPM);
-        LPMNaN = isnan(LPM);
-        LPM(LPMNaN) = 0;
-        LPM = afxFastSmooth(LPM,design.FWHM,space.dim,space.mat);
-        LPM(LPMNaN) = [];
-        x(idxTrain,12,:) = LPM;
-        design.predictors(end+1) = {'LPM'};
-        
+        x = afxCreateLesionProbabilityMap (x,y(idxTrain,:),masks.analysis,design,space,idxTrain);
+        % create LPM for TestPatients in fold as well
+        x = afxCreateLesionProbabilityMap (x,y(idxTest,:),masks.analysis,design,space,idxTest);
         % save fold in patient struct
         for i = find(idxTest), design.patients(i).fold = iFold; end
         % perform prediction
