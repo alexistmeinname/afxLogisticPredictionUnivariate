@@ -4,9 +4,9 @@ function CBFRel = afxCBFRel(x,y,design,space,masks)
     idxCBF = find(strcmpi(design.predictors,'CBF'),1);
     CBFRel = nan(size(x,1),1,size(x,3));
     
-  
+    x = tall(x);
     i = 0;
-    while size(x,1) > 0
+    while gather(size(x,1)) > 0
         i = i+1;
          % get 3d CBF and 3d lesion
         tmpCBF = reshape(afxDeMask(masks.analysis,x(1,idxCBF,:),NaN),space.dim);

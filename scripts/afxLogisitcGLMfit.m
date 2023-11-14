@@ -15,7 +15,7 @@ function [stats,scale] = afxLogisitcGLMfit(x,y)
     % fit logistic glm for every voxel
     fprintf('Fitting logistic GLMs [');
     ws = warning('off');
-  
+    
     % reshape input data (x, y) and clear x,y (for freeing memory)
     [x,y] = afxReshapeData(x,y);
     
@@ -37,8 +37,7 @@ function [stats,scale] = afxLogisitcGLMfit(x,y)
     scale.mean = nanmean(x,1);
     scale.std = nanstd(x,1);
     x = (x-scale.mean)./scale.std;
-   
-    
+
     % fit GLM
     [b,~,statistics] = glmfit(x,y,'binomial','link','logit');
     stats = struct('t',{statistics.t},'beta',{b},'dfe',{statistics.dfe},'mse',{nanmean(statistics.resid.^2)});

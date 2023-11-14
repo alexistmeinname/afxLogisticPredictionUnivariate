@@ -43,7 +43,7 @@ for iReduce = 0:length(reduce)
         % get design 
         load('data\Radiomics_Training_Leipzig\input\demographics\design.mat'); 
         brainMask = fullfile('masks','brainmask.nii');
-        %design.patients = design.patients(1:30);
+        design.patients = design.patients(1:100);
         if iReduce == 0
             design.analysisName = 'full_model';
         else
@@ -72,6 +72,7 @@ for iReduce = 0:length(reduce)
         
         % daten laden
         [x,y,masks,design] = afxPrepareDesign(design,space,brainMask);
+       
         % k-fold crossvalidation 
         designFile = afxKFold(x,y,masks,space,design);
         % evaluation

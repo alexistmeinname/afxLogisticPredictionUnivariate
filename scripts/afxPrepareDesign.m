@@ -31,7 +31,8 @@ function [x,y,masks,design] = afxPrepareDesign(design,space,brainMask,idxMask)
         end
     end
     fprintf('done (%.2f min).\n',toc(s)/60);
-
+    x = cast(x,"single");
+    y = cast(y,"single");
     s = tic;
     fprintf('Preparing masks and smoothing data ... ');
     % find cbf
