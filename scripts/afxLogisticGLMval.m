@@ -12,9 +12,9 @@ function [yfit] = afxLogisticGLMval(betas,x,scale)
         x = (x-scale.mean)./scale.std;
     end
     % initialize yfit
-    yfit = nan(size(x,1),size(x,3));
+    yfit = nan(size(x,1),size(x,3),'single');
     % predict response for every voxel
     for iVoxel = 1:size(x,3)
-        yfit(:,iVoxel) = glmval(betas,x(:,:,iVoxel),'logit');
+        yfit(:,iVoxel) = glmval(betas,double(x(:,:,iVoxel)),'logit');
     end
 end

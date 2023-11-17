@@ -11,9 +11,10 @@ function [x,y,masks,design] = afxPrepareDesign(design,space,brainMask,idxMask)
     % load images into design matrix x and response y
     s = tic;
     fprintf('Loading images ... ');
-    x = nan(nPatients,nPredictors,nVoxels);
-    y = false(nPatients,nVoxels);    %%creates matrix of the dimension npatients x nVoxels
-    for iPatient = 1:nPatients    
+
+    x = nan(nPatients,nPredictors,nVoxels,'single');
+    y = false(nPatients,nVoxels);
+    for iPatient = 1:nPatients
         for iPredictor = 1:nPredictors
             val = design.patients(iPatient).xRaw{iPredictor};
             if isnumeric(val)
@@ -31,8 +32,6 @@ function [x,y,masks,design] = afxPrepareDesign(design,space,brainMask,idxMask)
         end
     end
     fprintf('done (%.2f min).\n',toc(s)/60);
-    x = cast(x,"single");
-    y = cast(y,"single");
     s = tic;
     fprintf('Preparing masks and smoothing data ... ');
     % find cbf
@@ -42,7 +41,7 @@ function [x,y,masks,design] = afxPrepareDesign(design,space,brainMask,idxMask)
     xCBF = false(size(x)); xCBF(:,idxCBF,:) = 1;
     x(xZero & xCBF) = NaN;
     % mask lesion with individual perfusion mask
-    y = squeeze(~isnan(x(:,idxCBF,:))).*y;
+    y = logical(squeeze(~isnan(x(:,idxCBF,:))).*y);
     % create masks
     masks.analysis = (afxVolumeResample(brainMask,space.XYZmm,0) > .5)';
     % masks.informative = (masks.perfusion > design.minPerfusion*(nPredictors+1+length(design.interactions))) & (masks.lesions > nPatients*design.minLesion);
